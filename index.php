@@ -4,18 +4,51 @@ if ( ! session_id() ) {
 	@ session_start();
 }
 
-$_SESSION['currency']        = 'Taka';
-$_SESSION['currency_symbol'] = '৳';
-$_SESSION['billingDate']     = date( "Y-m-d" );
+$companies = [
+	[
+		'id'         => 'greenlifeit',
+		'company'    => 'Green Life IT',
+		'name' => 'Asiqur Rahman',
+		'email'      => 'admin@greenlifeit.com',
+		'phone'      => '+880-172-356-4501',
+		'address'    => 'Rajshahi, Bangladesh',
+		'website'    => 'https://greenlifeit.com',
+		'logo'       => 'assets/img/green-life-it.png',
+	],
+	[
+		'id'      => 'sowdabazar',
+		'company' => 'SowdaBazar',
+		'email'   => 'sales@sowdabazar.com',
+		'phone'   => '',
+		'address' => 'Rajshahi, Bangladesh',
+		'website' => 'https://sowdabazar.com',
+		'logo'    => 'assets/img/SowdaBazar.com-Logo-Primary.png',
+	]
+];
 
+$clients = [
+	[
+		'id'      => 'jon-doe-company',
+		'company' => 'Jon Doe Company',
+		'name'    => 'Jon Doe',
+		'email'   => 'jon@jondoe.com',
+		'phone'   => '+1-999-999-9999',
+		'address' => 'Texas, USA',
+		'website' => 'https://jondoe.com',
+	],
+	[
+		'id'        => 'projects4humanity',
+		'company'   => 'Project For Humanity',
+		'email'     => 'director@projects4humanity.org',
+		'phone'     => '+1-888-888-8888',
+		'address'   => 'PO Box 12345',
+		'address_2' => 'USA',
+		'website'   => 'https://projects4humanity.org',
+	]
+];
+
+$_SESSION['invoiceDate']     = date( "Y-m-d" );
 $_SESSION['invoiceNumber'] = '1001';
-$_SESSION['organisation']  = 'Green Life IT';
-$_SESSION['website']       = 'https://greenlifeit.com';
-//$_SESSION['firstName'] = 'Asiqur';
-//$_SESSION['lastName'] = 'Rahman';
-$_SESSION['yourEmail']   = 'admin@greenlifeit.com';
-$_SESSION['yourPhone']   = '+880-172-356-4501';
-$_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,6 +69,11 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 			border: 1px solid black;
 		}
 	</style>
+	
+	<script>
+		var companies = <?php echo json_encode( $companies ); ?>;
+		var clients = <?php echo json_encode( $clients ); ?>;
+	</script>
 
 </head>
 <body>
@@ -50,22 +88,30 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 				
 				<div class="col">
 					<div class="row justify-content-end ">
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<div class="form-group">
 								<select name="invoiceTemplate" id="invoiceTemplate" class="form-control invoiceTemplate">
-									<option value="template-1">Template 1</option>
+									<option selected value="template-1">Template 1</option>
 									<option value="template-2">Template 2</option>
 								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
+							<div class="form-group">
+								<select name="currency" id="currency" class="form-control currency">
+									<option selected value="৳">Taka</option>
+									<option value="$">USD</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-3">
 							<div class="form-group">
 								<input value="<?php echo isset( $_SESSION['invoiceNumber'] ) ? $_SESSION['invoiceNumber'] : '' ?>" type="text" class="form-control invoiceNumber" id="invoiceNumber" name="invoiceNumber" placeholder="Invoice Number">
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<div class="form-group">
-								<input value="<?php echo isset( $_SESSION['billingDate'] ) ? $_SESSION['billingDate'] : '' ?>" type="date" class="form-control billingDate" id="billingDate" name="billingDate">
+								<input value="<?php echo isset( $_SESSION['invoiceDate'] ) ? $_SESSION['invoiceDate'] : '' ?>" type="date" class="form-control invoiceDate" id="invoiceDate" name="invoiceDate">
 							</div>
 						</div>
 					</div>
@@ -77,17 +123,34 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 			<div class="row">
 				<div class="col-md-6">
 					<div class="well rounded p-3">
-						<h2>Your Details</h2>
+						<div class="row align-items-center">
+							<div class="col-md-6">
+								<h2 class="mb-2">Your Details</h2>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-2">
+									<select name="invoiceCompany" id="invoiceCompany" class="form-control invoiceCompany"></select>
+								</div>
+							</div>
+						</div>
 						<hr style="border-top: 1px solid #8c8b8b;">
 						
 						<div class="row">
-							<div class="col-md-6">
+							<div class="col-md-12">
 								<div class="form-group">
-									<label for="organisation">Organisation:</label>
-									<input value="<?php echo isset( $_SESSION['organisation'] ) ? $_SESSION['organisation'] : '' ?>" type="text" class="form-control organisation" name="organisation" id="organisation" placeholder="Organisation">
+									<label for="company">Company:</label>
+									<input value="<?php echo isset( $_SESSION['company'] ) ? $_SESSION['company'] : '' ?>" type="text" class="form-control company" name="company" id="company" placeholder="My Company">
 								</div>
 							</div>
-							<div class="col-md-6">
+						
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="name">Name:</label>
+									<input value="<?php echo isset( $_SESSION['name'] ) ? $_SESSION['name'] : '' ?>" type="text" class="form-control name" id="name" name="name" placeholder="Name">
+								</div>
+							</div>
+							
+							<div class="col-md-12">
 								<div class="form-group">
 									<label for="website">Website:</label>
 									<input value="<?php echo isset( $_SESSION['website'] ) ? $_SESSION['website'] : '' ?>" type="text" class="form-control website" name="website" id="website" placeholder="Website">
@@ -96,58 +159,29 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 						</div>
 						
 						<div class="row">
-							<div class="col-md-6">
+							<div class="col-md-4">
 								<div class="form-group">
-									<label for="firstName">First Name:</label>
-									<input value="<?php echo isset( $_SESSION['firstName'] ) ? $_SESSION['firstName'] : '' ?>" type="text" class="form-control firstName" id="firstName" name="firstName" placeholder="First Name">
+									<label for="email">Email:</label>
+									<input value="<?php echo isset( $_SESSION['email'] ) ? $_SESSION['email'] : '' ?>" type="text" class="form-control email" name="email" id="email" placeholder="Your Email">
 								</div>
 							</div>
-							<div class="col-md-6">
+							<div class="col-md-4">
 								<div class="form-group">
-									<label for="lastName">Last Name:</label>
-									<input value="<?php echo isset( $_SESSION['lastName'] ) ? $_SESSION['lastName'] : '' ?>" type="text" class="form-control lastName" name="lastName" id="lastName" placeholder="Last Name">
+									<label for="phone">Phone:</label>
+									<input value="<?php echo isset( $_SESSION['phone'] ) ? $_SESSION['phone'] : '' ?>" type="text" class="form-control phone" name="phone" id="phone" placeholder="Your Phone">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="address">Address:</label>
+									<input value="<?php echo isset( $_SESSION['address'] ) ? $_SESSION['address'] : '' ?>" type="text" class="form-control address" name="address" id="address" placeholder="Your Address">
 								</div>
 							</div>
 						</div>
-						
 						<div class="row">
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="bankName">Bank Name:</label>
-									<input value="<?php echo isset( $_SESSION['bankName'] ) ? $_SESSION['bankName'] : '' ?>" type="text" class="form-control bankName" name="bankName" id="bankName" placeholder="Bank Name">
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="branchName">Branch Name:</label>
-									<input value="<?php echo isset( $_SESSION['branchName'] ) ? $_SESSION['branchName'] : '' ?>" type="text" class="form-control branchName" name="branchName" id="branchName" placeholder="Branch Name">
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="accountNumber">Account No.:</label>
-									<input value="<?php echo isset( $_SESSION['accountNumber'] ) ? $_SESSION['accountNumber'] : '' ?>" type="text" class="form-control accountNumber" id="accountNumber" name="accountNumber" placeholder="Account Number">
-								</div>
-							</div>
-						</div>
-						
-						<div class="row">
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="yourEmail">Email:</label>
-									<input value="<?php echo isset( $_SESSION['yourEmail'] ) ? $_SESSION['yourEmail'] : '' ?>" type="text" class="form-control yourEmail" name="yourEmail" id="yourEmail" placeholder="Your Email">
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="yourPhone">Phone:</label>
-									<input value="<?php echo isset( $_SESSION['yourPhone'] ) ? $_SESSION['yourPhone'] : '' ?>" type="text" class="form-control yourPhone" name="yourPhone" id="yourPhone" placeholder="Your Phone">
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group">
-									<label for="yourAddress">Address:</label>
-									<input value="<?php echo isset( $_SESSION['yourAddress'] ) ? $_SESSION['yourAddress'] : '' ?>" type="text" class="form-control yourAddress" name="yourAddress" id="yourAddress" placeholder="Your Address">
+							<div class="col-12">
+								<div class="hidden-fields">
+									<input type="hidden" name="logo" id="logo">
 								</div>
 							</div>
 						</div>
@@ -155,20 +189,29 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 				</div>
 				<div class="col-md-6">
 					<div class="well rounded p-3">
-						<h2>Client Details</h2>
+						<div class="row align-items-center">
+							<div class="col-md-6">
+								<h2 class="mb-2">Client Details</h2>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-2">
+									<select name="invoiceClient" id="invoiceClient" class="form-control invoiceClient"></select>
+								</div>
+							</div>
+						</div>
 						<hr style="border-top: 1px solid #8c8b8b;">
 						
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-group">
-									<label for="companyName">Company Name:</label>
-									<input value="<?php echo isset( $_SESSION['companyName'] ) ? $_SESSION['companyName'] : '' ?>" type="text" class="form-control companyName" name="companyName" id="companyName" placeholder="Company Name">
+									<label for="clientCompany">Client Company:</label>
+									<input value="<?php echo isset( $_SESSION['clientCompany'] ) ? $_SESSION['clientCompany'] : '' ?>" type="text" class="form-control clientCompany" name="clientCompany" id="clientCompany" placeholder="Company Name">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-group">
-									<label for="clientName">Client Full Name:</label>
-									<input value="<?php echo isset( $_SESSION['clientName'] ) ? $_SESSION['clientName'] : '' ?>" type="text" class="form-control clientName" name="clientName" id="clientName" placeholder="Client Full Name">
+									<label for="clientName">Client Name:</label>
+									<input value="<?php echo isset( $_SESSION['clientName'] ) ? $_SESSION['clientName'] : '' ?>" type="text" class="form-control clientName" name="clientName" id="clientName" placeholder="Client Name">
 								</div>
 							</div>
 						</div>
@@ -232,22 +275,16 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 						<hr style="border-top: 1px solid #8c8b8b;">
 						
 						<div class="row">
-							<div class="col-md-5">Items</div>
-							<div class="col-md-2">Unit Price</div>
+							<div class="col-md-7">Items</div>
 							<div class="col-md-2">Quantity</div>
 							<div class="col-md-2">Line Total</div>
 							<div class="col-md-1"></div>
 						</div>
 						
 						<div class="row item">
-							<div class="col-md-5">
+							<div class="col-md-7">
 								<div class="form-group">
 									<input name="items[0][articlesName]" value="<?php echo isset( $_SESSION['items'][0]['articlesName'] ) ? $_SESSION['items'][0]['articlesName'] : '' ?>" type="text" class="form-control articlesName" placeholder="Item">
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="form-group">
-									<input name="items[0][unitPrice]" value="<?php echo isset( $_SESSION['items'][0]['unitPrice'] ) ? $_SESSION['items'][0]['unitPrice'] : '' ?>" type="number" class="form-control unitPrice" placeholder="Unit Price" value="" min="0">
 								</div>
 							</div>
 							<div class="col-md-2">
@@ -270,9 +307,7 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 								if ( empty( $old_items[ $i ]['articlesName'] ) ) {
 									$old_items[ $i ]['articlesName'] = '';
 								}
-								if ( empty( $old_items[ $i ]['unitPrice'] ) ) {
-									$old_items[ $i ]['unitPrice'] = '';
-								}
+								
 								if ( empty( $old_items[ $i ]['quantity'] ) ) {
 									$old_items[ $i ]['quantity'] = '';
 								}
@@ -281,8 +316,7 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 								}
 								
 								echo '<div class="row item">';
-								echo '<div class="col-md-5"><div class="form-group"><input name="items[' . $i . '][articlesName]" value="' . $old_items[ $i ]['articlesName'] . '" type="text" class="form-control articlesName" placeholder="Item"></div></div>';
-								echo '<div class="col-md-2"><div class="form-group"><input name="items[' . $i . '][unitPrice]" value="' . $old_items[ $i ]['unitPrice'] . '" type="number" min="0" class="form-control unitPrice" placeholder="Unit Price" value=""></div></div>';
+								echo '<div class="col-md-7"><div class="form-group"><input name="items[' . $i . '][articlesName]" value="' . $old_items[ $i ]['articlesName'] . '" type="text" class="form-control articlesName" placeholder="Item"></div></div>';
 								echo '<div class="col-md-2"><div class="form-group"><input name="items[' . $i . '][quantity]" value="' . $old_items[ $i ]['quantity'] . '" type="number" min="0" value="" class="form-control quantity" placeholder="0"></div></div>';
 								echo '<div class="col-md-2"><div class="form-group"><input name="items[' . $i . '][lineTotal]" value="' . $old_items[ $i ]['lineTotal'] . '" type="text" class="form-control lineTotal" placeholder="Line Total" value="0"></div></div>';
 								echo '<div class="col-md-1"><button type="button" class="btn btn-danger deleteItemBlock">&times;</div></div>';
@@ -373,8 +407,7 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 		
 		function item_block( item_no ) {
 			return '<div class="row item">' +
-			       '<div class="col-md-5"><div class="form-group"><input type="text" name="items[' + item_no + '][articlesName]" class="form-control articlesName" placeholder="Item"></div></div>' +
-			       '<div class="col-md-2"><div class="form-group"><input type="number" name="items[' + item_no + '][unitPrice]" min="0" class="form-control unitPrice" placeholder="Unit Price" value=""></div></div>' +
+			       '<div class="col-md-7"><div class="form-group"><input type="text" name="items[' + item_no + '][articlesName]" class="form-control articlesName" placeholder="Item"></div></div>' +
 			       '<div class="col-md-2"><div class="form-group"><input type="number" name="items[' + item_no + '][quantity]" min="0" value="" class="form-control quantity" placeholder="0"></div></div>' +
 			       '<div class="col-md-2"><div class="form-group"><input type="text" name="items[' + item_no + '][lineTotal]" class="form-control lineTotal" placeholder="Line Total" value="0"></div></div>' +
 			       '<div class="col-md-1"><button type="button" class="btn btn-danger deleteItemBlock">&times;</div></div>';
@@ -407,12 +440,9 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 			} );
 			
 			var discount = $( '.discountAmount' ).val();
-			console.log( 'Discounted anount' + discount );
 			if ( !isNaN( discount ) ) {
 				sumFinal = sumTotal - discount;
 			}
-			
-			console.log( sumFinal );
 			
 			var tax = $( '.taxPercent' ).val();
 			if ( !isNaN( tax ) ) {
@@ -441,7 +471,6 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 		} );
 		
 		$( '.articles' ).on( 'click focus keyup change focusout', '.lineTotal', function () {
-			var unitPrice = $( this ).parent().parent().parent().find( '.unitPrice' ).val();
 			var quantity = $( this ).parent().parent().parent().find( '.quantity' ).val();
 			var articlesName = $( this ).parent().parent().parent().find( '.articlesName' ).val();
 			
@@ -453,15 +482,10 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 				$( this ).parent().parent().parent().find( '.articlesName' ).css( 'background-color', '#fff' );
 			}
 			
-			if ( unitPrice != '' && quantity != '' ) {
-				var lineTotalVal = unitPrice * quantity;
-				$( this ).parent().parent().parent().find( '.lineTotal' ).val( lineTotalVal );
-			}
 			updateTotal();
 		} );
 		
 		$( '.articles' ).on( 'click focus keyup change focusout', '.quantity', function () {
-			var unitPrice = $( this ).parent().parent().parent().find( '.unitPrice' ).val();
 			var quantity = $( this ).parent().parent().parent().find( '.quantity' ).val();
 			var articlesName = $( this ).parent().parent().parent().find( '.articlesName' ).val();
 			
@@ -473,30 +497,6 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 				$( this ).parent().parent().parent().find( '.articlesName' ).css( 'background-color', '#fff' );
 			}
 			
-			if ( unitPrice != '' && quantity != '' ) {
-				var lineTotalVal = unitPrice * quantity;
-				$( this ).parent().parent().parent().find( '.lineTotal' ).val( lineTotalVal );
-			}
-			updateTotal();
-		} );
-		
-		$( '.articles' ).on( 'click focus keyup change focusout', '.unitPrice', function () {
-			var unitPrice = $( this ).parent().parent().parent().find( '.unitPrice' ).val();
-			var quantity = $( this ).parent().parent().parent().find( '.quantity' ).val();
-			var articlesName = $( this ).parent().parent().parent().find( '.articlesName' ).val();
-			
-			if ( articlesName == '' ) {
-				$( this ).parent().parent().parent().find( '.articlesName' ).css( 'border', '1px solid red' );
-				$( this ).parent().parent().parent().find( '.articlesName' ).css( 'background-color', '#ffeaea' );
-			} else {
-				$( this ).parent().parent().parent().find( '.articlesName' ).css( 'border', '1px solid black' );
-				$( this ).parent().parent().parent().find( '.articlesName' ).css( 'background-color', '#fff' );
-			}
-			
-			if ( unitPrice != '' && quantity != '' ) {
-				var lineTotalVal = unitPrice * quantity;
-				$( this ).parent().parent().parent().find( '.lineTotal' ).val( lineTotalVal );
-			}
 			updateTotal();
 		} );
 		
@@ -523,5 +523,7 @@ $_SESSION['yourAddress'] = 'Rajshahi, Bangladesh';
 	} );
 </script>
 
+
+<script src="assets/js/script.js"></script>
 </body>
 </html>

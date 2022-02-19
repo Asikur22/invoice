@@ -1,5 +1,16 @@
 <?php
+/**
+ *
+ * @var $billingAmount
+ * @var $finalAmount
+ *
+ */
 $table_col = array( '#', 'Item', 'Total' );
+
+//echo '<pre style="background: #fff; color: #000; padding: 15px; text-align: left;">';
+//var_dump( $_POST );
+//echo '</pre>';
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -59,22 +70,22 @@ $table_col = array( '#', 'Item', 'Total' );
 	<div class="offset-xl-2 col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 padding">
 		<div class="card">
 			<header class="card-header p-4 align-items-center d-flex justify-content-between">
-				<a class="pt-2 d-inline-block" href="https://greenlifeit.com/" target="_blank">
-					<img src="assets/img/green-life-it.png" alt="Green Life IT" class="w-75">
+				<a class="py-4 d-inline-block" href="https://greenlifeit.com/" target="_blank">
+					<img src="<?php echo urlencode( $_POST['logo'] ); ?>" alt="<?php the_field( 'company' ); ?>" class="w-75">
 				</a>
 				<div class="float-right">
-					<h3 class="text-dark mb-1"><?php the_field( 'organisation' ); ?></h3>
-					<div class="font-weight-bold"><?php echo get_field( 'firstName' ) . ' ' . get_field( 'lastName' ); ?></div>
-					<div><?php the_field( 'yourAddress' ); ?></div>
-					<div><?php the_field( 'yourPhone' ); ?></div>
-					<div><?php the_field( 'yourEmail' ); ?></div>
+					<h3 class="text-dark mb-1"><?php the_field( 'company' ); ?></h3>
+					<div class="font-weight-bold"><?php echo get_field( 'name' ); ?></div>
+					<div><?php the_field( 'address' ); ?></div>
+					<div><?php the_field( 'phone' ); ?></div>
+					<div><?php the_field( 'email' ); ?></div>
 				</div>
 			</header>
 			<div class="card-body">
 				<div class="row mb-4 justify-content-between align-items-center">
 					<div class="col-12 col-sm-6">
 						<div class="mb-3">Invoiced To:</div>
-						<h3 class="text-dark mb-1"><?php the_field( 'companyName' ); ?></h3>
+						<h3 class="text-dark mb-1"><?php the_field( 'clientCompany' ); ?></h3>
 						<div class="font-weight-bold"><?php the_field( 'clientName' ); ?></div>
 						<div><?php the_field( 'clientAddress' ); ?></div>
 						<div><?php the_field( 'clientAddress_2' ); ?></div>
@@ -83,7 +94,7 @@ $table_col = array( '#', 'Item', 'Total' );
 					</div>
 					<div class="col-12 col-sm-6 text-right">
 						<h3 class="mb-0">Invoice #<?php the_field( 'invoiceNumber' ); ?></h3>
-						Date: <?php echo dateFormatter( get_field( 'billingDate' ) ); ?>
+						Date: <?php echo dateFormatter( get_field( 'invoiceDate' ) ); ?>
 					</div>
 				</div>
 				<?php if ( get_field( 'orderNote' ) ) : ?>
@@ -149,15 +160,21 @@ $table_col = array( '#', 'Item', 'Total' );
 					</table>
 				</div>
 				<div class="row">
-					<div class="col-lg-4 col-sm-4"></div>
-					<div class="col-lg-6 col-sm-8 ml-auto">
+					<div class="col-12 col-lg-6 offset-lg-6  mt-4">
+						<?php
+						$discountAmount = get_field( 'discountAmount' );
+						$taxPercent     = get_field( 'taxPercent' );
+						$paidAmount     = get_field( 'paidAmount' );
+						?>
 						<table class="table table-clear">
-							<tr>
-								<td><strong>Subtotal</strong></td>
-								<td class="text-right sumTotal"><strong><?php echo numberToCurrency( $billingAmount ); ?></strong></td>
-							</tr>
 							<?php
-							$discountAmount = get_field( 'discountAmount' );
+							if ( ! ( empty( $discountAmount ) && empty( $taxPercent ) && empty( $paidAmount ) ) ) {
+								echo '<tr>';
+								echo '<td><strong>Subtotal</strong></td>';
+								echo '<td class="text-right sumTotal"><strong>' . numberToCurrency( $billingAmount ) . '</strong></td>';
+								echo '</tr>';
+							}
+							
 							if ( ! empty( $discountAmount ) ) {
 								echo '<tr><td><strong>Discount</strong></td>';
 								echo '<td class="text-right discountAmount">' . numberToCurrency( $discountAmount ) . '</td></tr>';
@@ -165,16 +182,13 @@ $table_col = array( '#', 'Item', 'Total' );
 								echo '<td class="text-right discountAmount">' . numberToCurrency( $billingAmount - $discountAmount ) . '</td></tr>';
 							}
 							
-							$taxPercent = get_field( 'taxPercent' );
 							if ( ! empty( $taxPercent ) ) {
 								echo '<tr><td><strong>TAX (' . $_POST['taxName'] . ' ' . $_POST['taxPercent'] . '%)</strong></td>';
 								$taxAmount = ( $billingAmount * $taxPercent ) / 100;
 								echo '<td class="text-right discountAmount">' . numberToCurrency( $taxAmount ) . '</td></tr>';
 							}
 							
-							$paidAmount = get_field( 'paidAmount' );
 							if ( ! empty( $paidAmount ) )  : ?>
-								<!--							--><?php //$finalAmount = $finalAmount - $paidAmount; ?>
 								<tr>
 									<td><strong>Amount Payed</strong></td>
 									<td class="text-right amountPayed">
@@ -183,18 +197,18 @@ $table_col = array( '#', 'Item', 'Total' );
 								</tr>
 							<?php endif; ?>
 							<tr>
-								<td class="tenPadding"><strong>Total (<?php echo $_SESSION['currency']; ?>)</strong></td>
+								<td class="tenPadding"><strong>Total (<?php echo $_POST['currency']; ?>)</strong></td>
 								<td class="text-right totalAmount"><strong><?php echo numberToCurrency( $finalAmount ); ?></strong></td>
 							</tr>
 						</table>
 					</div>
 				</div>
 				<div class="row mt-4 pt-5">
-					<div class="col-lg-12 text-center">I greatly appreciate the opportunity to provide you with my professional services.</div>
+					<div class="col-lg-12 text-center">We greatly appreciate the opportunity to provide you with our professional services.</div>
 				</div>
 			</div>
 			<footer class="card-footer bg-white mt-2">
-				<p class="mb-0 text-center"><small>GreenLifeIT.com, Rajshahi, Bangladesh</small></p>
+				<p class="mb-0 text-center"><small><?php the_field( 'company' ); ?>, <?php the_field( 'address' ); ?></small></p>
 			</footer>
 		</div>
 	</div>

@@ -9,7 +9,7 @@ exports.default = function dev() {
 		} );
 	} );
 	
-	gulp.watch( '**/*.php' ).on( 'change', function () {
+	gulp.watch( '**/*' ).on( 'change', function () {
 		browserSync.reload();
 	} );
 }

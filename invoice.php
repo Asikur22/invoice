@@ -1,22 +1,22 @@
 <?php
 
-if ( ! session_id() ) {
-	@ session_start();
-}
+//if ( ! session_id() ) {
+//	@ session_start();
+//}
 
-if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
-	foreach ( $_POST as $key => $value ) {
-		$_SESSION[ $key ] = $value;
-	}
-}
+//if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+//	foreach ( $_POST as $key => $value ) {
+//		$_POST[ $key ] = $value;
+//	}
+//}
 
 $billingAmount = 0;
 $discount      = 0;
 $taxAmount     = 0;
 $finalAmount   = 0;
 
-if ( isset( $_SESSION['items'][0]['lineTotal'] ) ) {
-	$items = array_values( $_SESSION['items'] );
+if ( isset( $_POST['items'][0]['lineTotal'] ) ) {
+	$items = array_values( $_POST['items'] );
 	for ( $i = 0; $i < count( $items ); $i ++ ) {
 		if ( empty( $items[ $i ]['lineTotal'] ) ) {
 			$items[ $i ]['lineTotal'] = 0;
@@ -24,9 +24,9 @@ if ( isset( $_SESSION['items'][0]['lineTotal'] ) ) {
 		
 		$billingAmount = $billingAmount + $items[ $i ]['lineTotal'];
 	}
-	if ( isset( $_SESSION['discountAmount'] ) ) {
-		if ( ! empty( $_SESSION['discountAmount'] ) ) {
-			$discount    = $_SESSION['discountAmount'];
+	if ( isset( $_POST['discountAmount'] ) ) {
+		if ( ! empty( $_POST['discountAmount'] ) ) {
+			$discount    = $_POST['discountAmount'];
 			$finalAmount = $billingAmount - $discount;
 		} else {
 			$finalAmount = $billingAmount;
@@ -34,9 +34,9 @@ if ( isset( $_SESSION['items'][0]['lineTotal'] ) ) {
 	} else {
 		$finalAmount = $billingAmount;
 	}
-	if ( isset( $_SESSION['taxPercent'] ) ) {
-		if ( ! empty( $_SESSION['taxPercent'] ) ) {
-			$taxAmount   = ( $finalAmount * $_SESSION['taxPercent'] ) / 100;
+	if ( isset( $_POST['taxPercent'] ) ) {
+		if ( ! empty( $_POST['taxPercent'] ) ) {
+			$taxAmount   = ( $finalAmount * $_POST['taxPercent'] ) / 100;
 			$finalAmount = $finalAmount + $taxAmount;
 		}
 	}
@@ -105,6 +105,7 @@ if ( isset( $_REQUEST['invoiceTemplate'] ) ) {
 	echo 'No Template Defined';
 	exit();
 }
+
 if ( file_exists( $template ) ) {
 	require_once( $template );
 } else {
